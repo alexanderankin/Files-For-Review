@@ -720,6 +720,12 @@ for filename in filesArray:
 
   uniqueNames[filename] += 1
 
+# group by number
+groups = defaultdict(lambda : [])
+for name in uniqueNames:
+  if (name and uniqueNames[name] != 3 and uniqueNames[name] != 1):
+    groups[uniqueNames[name]].append(name)
+
 print ("""
 
 #############################################################
@@ -730,8 +736,11 @@ or
   [ '.pileup.bigWig', '.ends-5bp.bigWig', '.ends.bigWig' ]
 
 """)
-for name in uniqueNames:
-  if (name and uniqueNames[name] != 3 and uniqueNames[name] != 1):
+for number in groups:
+  print()
+  print("filenames in groups of %i " % number)
+  print()
+  for name in groups[number]:
     print()
     print("name (" + name + ")")
     print()
@@ -739,3 +748,4 @@ for name in uniqueNames:
     for file in filesArray:
       if (file.find(name) != -1):
         print(file)
+
