@@ -710,21 +710,21 @@ print ("""These files are not of the form .something.bigWig
 
 """)
 for filename in filesArray:
-  count = len([m.start() for m in re.finditer('\.', filename)])
+  count = len([m.start() for m in re.finditer('\.', filename)])  # find all .
   if count < 2:
     print(filename)
     continue
 
-  filename = filename[0: filename.find('.bigWig')]
-  filename = filename[0: filename.rfind('.')]  # last index of
+  filename = filename[0: filename.find('.bigWig')]   # chop off '.bigWig'
+  filename = filename[0: filename.rfind('.')]        # chop off next bit
+  uniqueNames[filename] += 1                         # count them up
 
-  uniqueNames[filename] += 1
-
-# group by number
-groups = defaultdict(lambda : [])
+# group by number, sort into lists
+not_ok_groups = defaultdict(lambda : [])
 for name in uniqueNames:
+  # the assumption is that groupings .pileup and pileup+ends+5ends are okay.
   if (name and uniqueNames[name] != 3 and uniqueNames[name] != 1):
-    groups[uniqueNames[name]].append(name)
+    not_ok_groups[uniqueNames[name]].append(name)
 
 print ("""
 
@@ -736,16 +736,16 @@ or
   [ '.pileup.bigWig', '.ends-5bp.bigWig', '.ends.bigWig' ]
 
 """)
-for number in groups:
+for number in not_ok_groups:
   print()
   print("filenames in groups of %i " % number)
   print()
-  for name in groups[number]:
+  for name in not_ok_groups[number]:
     print()
-    print("name (" + name + ")")
+    print("\tname (" + name + ")")
     print()
     print()
     for file in filesArray:
       if (file.find(name) != -1):
-        print(file)
+        print("\t" + file)
 
