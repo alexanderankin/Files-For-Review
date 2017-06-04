@@ -704,39 +704,38 @@ import re
 from collections import defaultdict
 
 uniqueNames = defaultdict(lambda : 0)
-
 filesArray = files.split('\n')
-# for (var idx = 0; idx < filesArray.length; idx++) {
-  # var filename = filesArray[idx];
+
+print ("""These files are not of the form .something.bigWig
+
+""")
 for filename in filesArray:
-  # count = (filename.match(/\./g) || []).length;
   count = len([m.start() for m in re.finditer('\.', filename)])
-  # if (count !== 2) continue;
   if count < 2:
     print(filename)
     continue
 
   filename = filename[0: filename.find('.bigWig')]
   filename = filename[0: filename.rfind('.')]  # last index of
-  # filename = filename[0: filename.find('.')]
 
-  # if (uniqueNames[filename] === null || uniqueNames[filename] === undefined) uniqueNames[filename] = 0;  # default dict
   uniqueNames[filename] += 1
-# }
 
-# for (name in uniqueNames) {
+print ("""
+
+#############################################################
+
+These are all groups of files which are not in groups of form
+  [ '.pileup.bigWig' ]
+or
+  [ '.pileup.bigWig', '.ends-5bp.bigWig', '.ends.bigWig' ]
+
+""")
 for name in uniqueNames:
   if (name and uniqueNames[name] != 3 and uniqueNames[name] != 1):
     print()
     print("name (" + name + ")")
     print()
     print()
-    # filesArray.forEach(function (file) {
     for file in filesArray:
       if (file.find(name) != -1):
         print(file)
-      # }
-    # })
-  # }
-# }
-
